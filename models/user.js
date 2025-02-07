@@ -24,9 +24,24 @@ const userSchema = mongoose.Schema({
     currency: {
         type: String,
         required: true
-    }, 
-       
-    
+    },
+
+    moneyLeft: {
+
+        type: Number,
+        default: 0
+
+    },
+
+    goals: [
+        {
+            name: { type: String, required: true },
+            goalAmount: { type: Number, required: true },
+            moneySaved: { type: Number, required: true }
+        }
+    ]
+
+
 
 }, {
     timestamps: true,
