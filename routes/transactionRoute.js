@@ -112,6 +112,38 @@ router.put("/updatetransaction", async (req, res) => {
     }
 });
 
+router.delete("/deleteTransaction/:id", async (req, res) => {
+    try {
+        const transactionid = req.params.id;
+        const transaction = await Transaction.findById(transactionid);
+
+        if (!transaction) {
+            return res.status(404).json({ message: "Transaction not found" });
+        }
+
+        const user = await User.findById(transaction.userid);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+
+        if (transaction.type === "income") {
+            user.moneyLeft -= transaction.amount;
+        } else {
+            user.moneyLeft += transaction.amount;
+        }
+
+        await user.save();
+        await Transaction.findByIdAndDelete(transactionid);
+
+        res.json({ message: "Transaction deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting transaction:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 
 
 module.exports = router;
